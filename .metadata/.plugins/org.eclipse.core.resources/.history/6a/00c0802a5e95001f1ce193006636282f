@@ -1,0 +1,13 @@
+package GestaoDeProdutos.Entidades;
+
+public class Bermuda extends Produto {
+	public String Cor;
+	public int Tamanho;
+	
+	public Bermuda(int codigo, String nome, int quantidade, double preco, String cor, int tamanho) {
+		super(codigo, nome, quantidade, preco);
+		this.Cor = cor;
+		this.Tamanho = tamanho;
+	}
+
+}

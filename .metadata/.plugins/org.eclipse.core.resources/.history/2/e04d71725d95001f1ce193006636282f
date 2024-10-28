@@ -1,0 +1,5 @@
+package GestaoDeProdutos;
+
+public class IEstoqueManager {
+
+}

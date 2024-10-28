@@ -1,0 +1,56 @@
+package GestaoDeProdutos.Servico;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import GestaoDeProdutos.Entidades.Produto;
+import GestaoDeProdutos.Infraestrutura.ProdutoRepositorio;
+
+public class EstoqueManager implements IEstoqueManager {
+    private IProdutoRepositorio produtoRepositorio;
+
+    // Injeção de dependência
+    public EstoqueManager(ProdutoRepositorio produtoRepositorio) {
+        this.produtoRepositorio = produtoRepositorio;
+    }
+
+    @Override
+    // Adiciona um produto ao estoque
+    public void adicionarProduto(Produto produto) {
+        if (produto == null) {
+            throw new IllegalArgumentException("Produto não pode ser nulo.");
+        }
+        produtoRepositorio.adicionarProduto(produto);
+    }
+
+    // Atualiza a quantidade de um produto em estoque
+    public void atualizarQuantidade(int codigo, int novaQuantidade) {
+        Produto produto = buscarProduto(codigo);
+        if (produto != null) {
+            produto.setQuantidade(novaQuantidade);
+        }
+    }
+
+    // Remove um produto do estoque
+    public void removerProduto(int codigo) {
+        Produto produto = buscarProduto(codigo);
+        if (produto != null) {
+            produtos.remove(produto);
+        } 
+    }
+
+    // Lista todos os produtos no estoque
+    public void listarProdutos() {
+        
+    }
+
+    // Método auxiliar para buscar um produto pelo código
+    public Produto buscarProduto(int codigo) {
+        for (Produto produto : produtos) {
+            if (produto.getCodigo() == codigo) {
+                return produto;
+            }
+        }
+        return null;
+    }
+}

@@ -1,0 +1,5 @@
+package GestaoDeProdutos.Infraestrutura;
+
+public interface IProdutoRepositorio {
+
+}

@@ -1,0 +1,51 @@
+package GestaoDeProdutos.Servico;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import GestaoDeProdutos.IEstoqueManager;
+import GestaoDeProdutos.Entidades.Produto;
+
+public class EstoqueManager implements IEstoqueManager {
+    private List<Produto> produtos; // Lista de produtos em estoque
+
+    public EstoqueManager() {
+        this.produtos = new ArrayList<>();
+    }
+
+    // Adiciona um produto ao estoque
+    public void adicionarProduto(Produto produto) {
+        produtos.add(produto);
+    }
+
+    // Atualiza a quantidade de um produto em estoque
+    public void atualizarQuantidade(int codigo, int novaQuantidade) {
+        Produto produto = buscarProduto(codigo);
+        if (produto != null) {
+            produto.setQuantidade(novaQuantidade);
+        }
+    }
+
+    // Remove um produto do estoque
+    public void removerProduto(int codigo) {
+        Produto produto = buscarProduto(codigo);
+        if (produto != null) {
+            produtos.remove(produto);
+        } 
+    }
+
+    // Lista todos os produtos no estoque
+    public void listarProdutos() {
+        
+    }
+
+    // Método auxiliar para buscar um produto pelo código
+    private Produto buscarProduto(int codigo) {
+        for (Produto produto : produtos) {
+            if (produto.getCodigo() == codigo) {
+                return produto;
+            }
+        }
+        return null;
+    }
+}

@@ -1,0 +1,20 @@
+package GestaoDeProdutos.Infraestrutura;
+
+import GestaoDeProdutos.Entidades.Produto;
+
+public interface IProdutoRepositorio {
+	// Adiciona um produto ao estoque
+    void adicionarProduto(Produto produto);
+
+    // Atualiza a quantidade de um produto em estoque
+    void atualizarQuantidade(int codigo, int novaQuantidade);
+
+    // Remove um produto do estoque
+    void removerProduto(int codigo);
+
+    // Lista todos os produtos no estoque
+    void listarProdutos();
+    
+    //Busca produto no estoque
+    void buscarProdutos();
+ }

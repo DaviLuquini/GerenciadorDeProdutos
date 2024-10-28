@@ -1,0 +1,5 @@
+package GestaoDeProdutos.Servico;
+
+public interface IProdutoFabrica {
+
+}

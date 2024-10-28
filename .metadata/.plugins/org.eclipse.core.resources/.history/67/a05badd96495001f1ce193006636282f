@@ -1,0 +1,7 @@
+package GestaoDeProdutos.Servico;
+
+public interface IProdutoFabrica {
+    Produto criarCamisa(int codigo, String nome, int quantidade, double preco, String cor, char tamanho);
+    Produto criarBermuda(int codigo, String nome, int quantidade, double preco, String cor, int comprimento);
+}
+

@@ -1,0 +1,14 @@
+package GestaoDeProdutos.Entidades;
+
+public class ProdutoFabrica implements IProdutoFabrica {
+
+    @Override
+    public Produto criarCamisa(int codigo, String nome, int quantidade, double preco, String cor, char tamanho) {
+        return new Camisa(codigo, nome, quantidade, preco, cor, tamanho);
+    }
+
+    @Override
+    public Produto criarBermuda(int codigo, String nome, int quantidade, double preco, String cor, int comprimento) {
+        return new Bermuda(codigo, nome, quantidade, preco, cor, comprimento);
+    }
+}
