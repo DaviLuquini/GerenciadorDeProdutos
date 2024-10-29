@@ -2,6 +2,8 @@ package GestaoDeProdutos.Servico;
 
 import java.util.List;
 
+import GestaoDeProdutos.Entidades.Bermuda;
+import GestaoDeProdutos.Entidades.Camisa;
 import GestaoDeProdutos.Entidades.IProdutoFabrica;
 import GestaoDeProdutos.Entidades.Produto;
 import GestaoDeProdutos.Infraestrutura.IProdutoRepositorio;
@@ -15,52 +17,75 @@ public class EstoqueManager implements IEstoqueManager {
 		this.produtoRepositorio = produtoRepositorio;
 		this.produtoFabrica = produtoFabrica;
 	}
-
-	@Override
-	// Adiciona um produto ao estoque
-	public void adicionarProduto(int codigo, String nome, int quantidade, double preco, String cor, int comprimento) {
-		Produto novaBermuda = produtoFabrica.criarProduto(codigo, nome, quantidade, preco, cor, comprimento);
-		
-		produtoRepositorio.adicionarProduto(novaBermuda);
-	}
 	
 	@Override
 	// Adiciona um produto ao estoque
-	public void adicionarProduto(int codigo, String nome, int quantidade, double preco, String manga, String tamanho) {
-		Produto novaCamisa = produtoFabrica.criarProduto(codigo, nome, quantidade, preco, manga, tamanho);
+	public void adicionarCamisa(int codigo, String nome, int quantidade, double preco, String manga, String tamanho) {
+		Camisa novaCamisa = produtoFabrica.criarCamisa(codigo, nome, quantidade, preco, manga, tamanho);
 		
-		produtoRepositorio.adicionarProduto(novaCamisa);
+		produtoRepositorio.adicionarCamisa(novaCamisa);
+	}
+
+	@Override
+	// Adiciona um produto ao estoque
+	public void adicionarBermuda(int codigo, String nome, int quantidade, double preco, String cor, int comprimento) {
+		Bermuda novaBermuda = produtoFabrica.criarBermuda(codigo, nome, quantidade, preco, cor, comprimento);
+		
+		produtoRepositorio.adicionarBermuda(novaBermuda);
 	}
 
 	// Atualiza a quantidade de um produto em estoque
-	public void atualizarQuantidade(int codigo, int novaQuantidade) {
-		Produto produto = buscarProduto(codigo);
+	@Override
+	public void atualizarQuantidade(String nome, int codigo, int novaQuantidade) {
+		Produto produto = buscarProduto(nome, codigo);
 		if (produto != null) {
 			produto.setQuantidade(novaQuantidade);
 			produtoRepositorio.atualizarQuantidade(produto); // Atualiza no repositório
+            System.out.println("Quantidade do produto atualizada: " + produto.getNome() + " - " + produto.getQuantidade());
 		}
 	}
 
 	// Remove um produto do estoque
-	public void removerProduto(int codigo) {
-		Produto produto = buscarProduto(codigo);
+	@Override
+	public void removerProduto(String nome, int codigo) {
+		Produto produto = buscarProduto(nome ,codigo);
 		if (produto != null) {
-			produtoRepositorio.removerProduto(codigo); // Remove do repositório
+			produtoRepositorio.removerProduto(produto.getNome() ,codigo); // Remove do repositório
 		}
 	}
 
 	// Lista todos os produtos no estoque
-	public List<Produto> listarProdutos() {
-		return produtoRepositorio.listarProdutos(); // Lista todos do repositório
+	@Override
+	public void listarProdutos() {
+		List<Camisa> listaDeCamisas = produtoRepositorio.listarCamisas(); // Lista todas camisas do repositório
+		for (Produto produto : listaDeCamisas) {
+		    System.out.println(produto.getNome() + " - " + produto.getQuantidade());
+		}
+		
+		List<Bermuda> listaDeBermudas = produtoRepositorio.listarBermudas(); // Lista todas bermudas do repositório
+		for (Produto produto : listaDeBermudas) {
+		    System.out.println(produto.getNome() + " - " + produto.getQuantidade());
+		}
 	}
 
 	// Método auxiliar para buscar um produto pelo código
-	public Produto buscarProduto(int codigo) {
-		for (Produto produto : produtoRepositorio.listarProdutos()) { // Usa o repositório para buscar
-			if (produto.getCodigo() == codigo) {
-				return produto;
+	@Override
+	public Produto buscarProduto(String nome, int codigo) {
+		if(nome == "Camisa") {
+			for (Produto produto : produtoRepositorio.listarCamisas()) { // Usa o repositório para buscar
+				if (produto.getCodigo() == codigo) {
+					return produto;
+				}
+			}
+		} else {
+			for (Produto produto : produtoRepositorio.listarBermudas()) { // Usa o repositório para buscar
+				if (produto.getCodigo() == codigo) {
+					return produto;
+				}
 			}
 		}
+		
+		System.out.println("Produto não encontrado.");
 		return null;
 	}
 

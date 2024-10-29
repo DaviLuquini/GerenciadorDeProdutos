@@ -1,27 +1,40 @@
-*target*
+# Ignorar arquivos e pastas específicas do Eclipse
+.metadata/
+.classpath
+.project
+.settings/
+bin/
+tmp/
+
+# Ignorar arquivos temporários e backups
+*.log
+*.snap
+*.bak
+*.swp
+*.tmp
+*.syncinfo
+*.markers
+*.index
+*.xmi
+*.prefs
+*.png
+*.xml.zip
+
+# Ignorar arquivos específicos do Maven e Gradle
+target/
 *.jar
 *.war
 *.ear
+
+# Ignorar arquivos de compilação
 *.class
+out/
 
-# eclipse specific git ignore
-*.pydevproject
-.project
-.metadata
-bin/**
-tmp/**
-tmp/**/*
-*.tmp
-*.bak
-*.swp
-*~.nib
+# Ignorar configurações locais e ferramentas
 local.properties
-.classpath
-.settings/
-.loadpath
-
-# External tool builders
 .externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
 *.launch
+
+# Ignorar arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db
