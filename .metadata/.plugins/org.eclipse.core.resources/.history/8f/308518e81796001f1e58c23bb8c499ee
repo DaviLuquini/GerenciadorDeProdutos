@@ -1,0 +1,98 @@
+package GestaoDeProdutos.Infraestrutura;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import GestaoDeProdutos.Entidades.Bermuda;
+import GestaoDeProdutos.Entidades.Camisa;
+import GestaoDeProdutos.Entidades.Produto;
+
+public class ProdutoRepositorio implements IProdutoRepositorio {
+    private final DbConnection dbConnection;
+
+    public ProdutoRepositorio() {
+        dbConnection = new DbConnection();
+    }
+    // Adiciona um produto ao estoque
+    @Override
+    // Método para adicionar um produto ao banco de dados
+    public void adicionarProduto(Camisa camisa) {
+    		String sql = "INSERT INTO camisa (codigo, nome, quantidade, preco, manga, tamanho) VALUES (?, ?, ?, ?, ?, ?)";
+            try (Connection connection = dbConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                statement.setString(1, camisa.getCodigo());
+                statement.setDouble(2, camisa.getNome());
+                statement.setString(3, camisa.getQuantidade());
+                statement.setDouble(4, camisa.getPreco());
+                statement.setString(5, camisa.getManga());
+                statement.setDouble(6, camisa.getTamanho());
+                statement.executeUpdate();
+                
+                System.out.println("Produto adicionado com sucesso.");
+            } catch (SQLException e) {
+                System.err.println("Erro ao adicionar produto: " + e.getMessage());
+            }
+    }
+    
+    public void adicionarProduto(Bermuda bermuda) {
+    		String sql = "INSERT INTO camisa (codigo, nome, quantidade, preco, manga, tamanho) VALUES (?, ?, ?, ?, ?, ?)";
+            try (Connection connection = dbConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                statement.setString(1, bermuda.getCodigo());
+                statement.setDouble(2, bermuda.getNome());
+                statement.setString(3, bermuda.getQuantidade());
+                statement.setDouble(4, bermuda.getPreco());
+                statement.setString(5, bermuda.getManga());
+                statement.setDouble(6, bermuda.getTamanho());
+                statement.executeUpdate();
+                
+                System.out.println("Produto adicionado com sucesso.");
+            } catch (SQLException e) {
+                System.err.println("Erro ao adicionar produto: " + e.getMessage());
+            }   
+    }
+
+    // Atualiza a quantidade de um produto em estoque
+    @Override
+    public void atualizarQuantidade(Produto produto) {
+        Produto produtoExistente = buscarProduto(produto.getCodigo());
+        if (produtoExistente != null) {
+            produtoExistente.setQuantidade(produto.getQuantidade());
+        }
+    }
+
+    // Remove um produto do estoque
+    @Override
+    public void removerProduto(int codigo) {
+        Produto produto = buscarProduto(codigo);
+        if (produto != null) {
+            produtos.remove(produto);
+        } 
+    }
+
+    // Lista todos os produtos no estoque
+    @Override
+    public List<Produto> listarProdutos() {
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto no estoque.");
+        }
+        return produtos;
+    }
+
+    // Busca um produto pelo código no estoque
+    @Override
+    public Produto buscarProduto(int codigo) {
+        for (Produto produto : produtos) {
+            if (produto.getCodigo() == codigo) {
+                return produto;
+            }
+        }
+        return null;
+    }
+}
