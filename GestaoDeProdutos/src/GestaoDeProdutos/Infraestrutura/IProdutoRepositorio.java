@@ -17,7 +17,7 @@ public interface IProdutoRepositorio {
 	void atualizarQuantidade(Produto produto);
 
     // Remove um produto do estoque
-	void removerProduto(String nome, int codigo);
+	void removerProduto(String tipo, int codigo);
 
     // Lista todos as camisas no estoque
     List<Camisa> listarCamisas();

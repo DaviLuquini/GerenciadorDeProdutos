@@ -1,6 +1,5 @@
 package GestaoDeProdutos.Infraestrutura;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +10,6 @@ import GestaoDeProdutos.Entidades.Bermuda;
 import GestaoDeProdutos.Entidades.Camisa;
 import GestaoDeProdutos.Entidades.IProdutoFabrica;
 import GestaoDeProdutos.Entidades.Produto;
-import GestaoDeProdutos.Entidades.ProdutoFabrica;
 
 public class ProdutoRepositorio implements IProdutoRepositorio {
 	private final DbConnection dbConnection;
@@ -26,41 +24,42 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 	@Override
 	// Método para adicionar um produto ao banco de dados
 	public void adicionarCamisa(Camisa camisa) {
-		String sql = "INSERT INTO camisas (codigo, nome, quantidade, preco, manga, tamanho) VALUES (?, ?, ?, ?, ?, ?)";
-		try (Connection connection = dbConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql)) {
+		String sql = "INSERT INTO camisas (tipo, codigo, nome, quantidade, preco, manga, tamanho) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
-			statement.setInt(1, camisa.getCodigo());
-			statement.setString(2, camisa.getNome());
-			statement.setInt(3, camisa.getQuantidade());
-			statement.setDouble(4, camisa.getPreco());
-			statement.setString(5, camisa.getManga());
-			statement.setString(6, camisa.getTamanho());
+			statement.setString(1, camisa.getTipo());
+			statement.setInt(2, camisa.getCodigo());
+			statement.setString(3, camisa.getNome());
+			statement.setInt(4, camisa.getQuantidade());
+			statement.setDouble(5, camisa.getPreco());
+			statement.setString(6, camisa.getManga());
+			statement.setString(7, camisa.getTamanho());
 			statement.executeUpdate();
 
-			System.out.println("Produto adicionado com sucesso.");
+			System.out.println("Camisa adicionado com sucesso.");
 		} catch (SQLException e) {
-			System.err.println("Erro ao adicionar produto: " + e.getMessage());
+			System.err.println("Erro ao adicionar camisa: " + e.getMessage());
 		}
 	}
 
 	@Override
 	// Método para adicionar um produto ao banco de dados
 	public void adicionarBermuda(Bermuda bermuda) {
-		String sql = "INSERT INTO bermudas (codigo, nome, quantidade, preco, cor, tamanho) VALUES (?, ?, ?, ?, ?, ?)";
-		try (Connection connection = dbConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql)) {
+		String sql = "INSERT INTO bermudas (tipo, codigo, nome, quantidade, preco, cor, comprimento) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
-			statement.setString(2, bermuda.getNome());
-			statement.setInt(3, bermuda.getQuantidade());
-			statement.setDouble(4, bermuda.getPreco());
-			statement.setString(5, bermuda.getCor());
-			statement.setInt(6, bermuda.getTamanho());
+			statement.setString(1, bermuda.getTipo());
+			statement.setInt(2, bermuda.getCodigo());
+			statement.setString(3, bermuda.getNome());
+			statement.setInt(4, bermuda.getQuantidade());
+			statement.setDouble(5, bermuda.getPreco());
+			statement.setString(6, bermuda.getCor());
+			statement.setInt(7, bermuda.getComprimento());
 			statement.executeUpdate();
 
 			System.out.println("Produto adicionado com sucesso.");
 		} catch (SQLException e) {
-			System.err.println("Erro ao adicionar produto: " + e.getMessage());
+			System.err.println("Erro ao adicionar bermuda: " + e.getMessage());
 		}
 	}
 
@@ -69,7 +68,7 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 	public void atualizarQuantidade(Produto produto) {
 		Produto produtoExistente;
 		
-		if(produto.getNome() == "Camisa") {
+		if(produto.getTipo() == "Camisa") {
 			 produtoExistente = buscarCamisa(produto.getCodigo());
 		} else {
 			 produtoExistente = buscarBermuda(produto.getCodigo());
@@ -77,11 +76,10 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 
 		if (produtoExistente != null) {
 			// Defina a tabela com base no tipo de produto
-			String tabela = produtoExistente.getNome().equals("Camisa") ? "camisas" : "bermudas";
+			String tabela = produtoExistente.getTipo().equals("Camisa") ? "camisas" : "bermudas";
 			String sql = "UPDATE " + tabela + " SET quantidade = ? WHERE codigo = ?";
 
-			try (Connection connection = dbConnection.getConnection();
-					PreparedStatement statement = connection.prepareStatement(sql)) {
+			try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
 				statement.setInt(1, produtoExistente.getQuantidade());
 				statement.setInt(2, produtoExistente.getCodigo());
@@ -92,26 +90,25 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 				System.err.println("Erro ao atualizar quantidade: " + e.getMessage());
 			}
 		} else {
-			System.err.println("Produto não encontrado.");
+			System.err.println("Produto para atualizar quantidade não encontrado no repositorio.");
 		}
 	}
 
 	// Remove um produto do estoque
 	@Override
-	public void removerProduto(String nome, int codigo) {
+	public void removerProduto(String tipo, int codigo) {
 		Produto produtoExistente;
 		
-		if(nome == "Camisa") {
+		if(tipo == "Camisa") {
 			 produtoExistente = buscarCamisa(codigo);
 		} else {
 			 produtoExistente = buscarBermuda(codigo);
 		}
 		
 		if (produtoExistente != null) {
-			String sql = "DELETE FROM " + nome + " WHERE codigo = ?";
+			String sql = "DELETE FROM " + tipo + " WHERE codigo = ?";
 
-			try (Connection connection = dbConnection.getConnection();
-					PreparedStatement statement = connection.prepareStatement(sql)) {
+			try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
 				statement.setInt(1, produtoExistente.getCodigo());
 				int rowsAffected = statement.executeUpdate();
@@ -135,12 +132,11 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 		List<Camisa> camisas = new ArrayList<>();
 		String sql = "SELECT * FROM public.camisas ORDER BY id ASC;";
 
-		try (Connection connection = dbConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);
-				ResultSet resultSet = statement.executeQuery()) {
+        try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
 			while (resultSet.next()) {
-				int id = resultSet.getInt("id");
+				String tipo = resultSet.getString("tipo");
 				int codigo = resultSet.getInt("codigo");
 				String nome = resultSet.getString("nome");
 				int quantidade = resultSet.getInt("quantidade");
@@ -148,7 +144,7 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 				String manga = resultSet.getString("manga");
 				String tamanho = resultSet.getString("tamanho");
 
-				Camisa camisa = produtoFabrica.criarCamisa(codigo, nome, quantidade, preco, manga, tamanho);
+				Camisa camisa = produtoFabrica.criarCamisa(tipo, codigo, nome, quantidade, preco, manga, tamanho);
 
 				camisas.add(camisa);
 			}
@@ -168,20 +164,19 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 		List<Bermuda> bermudas = new ArrayList<>();
 		String sql = "SELECT * FROM public.bermudas ORDER BY id ASC;";
 
-		try (Connection connection = dbConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);
-				ResultSet resultSet = statement.executeQuery()) {
+        try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
 			while (resultSet.next()) {
-				int id = resultSet.getInt("id");
+				String tipo = resultSet.getString("tipo");
 				int codigo = resultSet.getInt("codigo");
 				String nome = resultSet.getString("nome");
 				int quantidade = resultSet.getInt("quantidade");
 				double preco = resultSet.getDouble("preco");
 				String cor = resultSet.getString("cor");
-				int tamanho = resultSet.getInt("tamanho");
+				int comprimento = resultSet.getInt("comprimento");
 
-				Bermuda bermuda = produtoFabrica.criarBermuda(codigo, nome, quantidade, preco, cor, tamanho);
+				Bermuda bermuda = produtoFabrica.criarBermuda(tipo, codigo, nome, quantidade, preco, cor, comprimento);
 
 				bermudas.add(bermuda);
 			}
@@ -199,23 +194,22 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 	// Busca uma camisa pelo código no estoque
 	@Override
 	public Camisa buscarCamisa(int codigo) {
-		String sql = "SELECT id, codigo, nome, quantidade, preco::numeric, manga, tamanho "
+		String sql = "SELECT id, tipo, codigo, nome, quantidade, preco::numeric, manga, tamanho "
 				+ "FROM public.camisas WHERE codigo = ?;";
-		try (Connection connection = dbConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql)) {
+		try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
 			statement.setInt(1, codigo);
 			ResultSet resultSet = statement.executeQuery();
 
 			if (resultSet.next()) {
-				int id = resultSet.getInt("id");
+				String tipo = resultSet.getString("tipo");
 				String nome = resultSet.getString("nome");
 				int quantidade = resultSet.getInt("quantidade");
 				double preco = resultSet.getDouble("preco");
 				String manga = resultSet.getString("manga");
 				String tamanho = resultSet.getString("tamanho");
 
-				return new Camisa(codigo, nome, quantidade, preco, manga, tamanho);
+				return new Camisa(tipo, codigo, nome, quantidade, preco, manga, tamanho);
 			}
 
 		} catch (SQLException e) {
@@ -227,23 +221,22 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 	// Busca uma bermuda pelo código no estoque
 	@Override
 	public Bermuda buscarBermuda(int codigo) {
-		String sql = "SELECT id, codigo, nome, quantidade, preco::numeric, cor, tamanho "
+		String sql = "SELECT id, tipo, codigo, nome, quantidade, preco::numeric, cor, comprimento "
 				+ "FROM public.bermudas WHERE codigo = ?;";
-		try (Connection connection = dbConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql)) {
+		try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
 			statement.setInt(1, codigo);
 			ResultSet resultSet = statement.executeQuery();
 
 			if (resultSet.next()) {
-				int id = resultSet.getInt("id");
+				String tipo = resultSet.getString("tipo");
 				String nome = resultSet.getString("nome");
 				int quantidade = resultSet.getInt("quantidade");
 				double preco = resultSet.getDouble("preco");
 				String cor = resultSet.getString("cor");
-				int tamanho = resultSet.getInt("tamanho");
+				int comprimento = resultSet.getInt("comprimento");
 
-				return new Bermuda(codigo, nome, quantidade, preco, cor, tamanho);
+				return new Bermuda(tipo, codigo, nome, quantidade, preco, cor, comprimento);
 			}
 
 		} catch (SQLException e) {
@@ -251,5 +244,11 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 		}
 		return null; // Retorna null se a bermuda não for encontrada
 	}
+	
+	 public void fecharConexao() {
+	        if (dbConnection != null) {
+	            dbConnection.close(); // Fecha a conexão
+	        }
+	    }
 
 }

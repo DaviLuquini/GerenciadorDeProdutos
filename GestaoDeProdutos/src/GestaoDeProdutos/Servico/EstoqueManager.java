@@ -20,35 +20,37 @@ public class EstoqueManager implements IEstoqueManager {
 	
 	@Override
 	// Adiciona um produto ao estoque
-	public void adicionarCamisa(int codigo, String nome, int quantidade, double preco, String manga, String tamanho) {
-		Camisa novaCamisa = produtoFabrica.criarCamisa(codigo, nome, quantidade, preco, manga, tamanho);
+	public void adicionarCamisa(String tipo, int codigo, String nome, int quantidade, double preco, String manga, String tamanho) {
+		Camisa novaCamisa = produtoFabrica.criarCamisa(tipo, codigo, nome, quantidade, preco, manga, tamanho);
 		
 		produtoRepositorio.adicionarCamisa(novaCamisa);
 	}
 
 	@Override
 	// Adiciona um produto ao estoque
-	public void adicionarBermuda(int codigo, String nome, int quantidade, double preco, String cor, int comprimento) {
-		Bermuda novaBermuda = produtoFabrica.criarBermuda(codigo, nome, quantidade, preco, cor, comprimento);
+	public void adicionarBermuda(String tipo, int codigo, String nome, int quantidade, double preco, String cor, int comprimento) {
+		Bermuda novaBermuda = produtoFabrica.criarBermuda(tipo ,codigo, nome, quantidade, preco, cor, comprimento);
 		
 		produtoRepositorio.adicionarBermuda(novaBermuda);
 	}
 
 	// Atualiza a quantidade de um produto em estoque
 	@Override
-	public void atualizarQuantidade(String nome, int codigo, int novaQuantidade) {
-		Produto produto = buscarProduto(nome, codigo);
+	public void atualizarQuantidade(String tipo, int codigo, int novaQuantidade) {
+		Produto produto = buscarProduto(tipo, codigo);
 		if (produto != null) {
 			produto.setQuantidade(novaQuantidade);
 			produtoRepositorio.atualizarQuantidade(produto); // Atualiza no repositório
             System.out.println("Quantidade do produto atualizada: " + produto.getNome() + " - " + produto.getQuantidade());
+		} else {
+			System.out.println("Produto para atualizar quantidade não encotrado");
 		}
 	}
 
 	// Remove um produto do estoque
 	@Override
-	public void removerProduto(String nome, int codigo) {
-		Produto produto = buscarProduto(nome ,codigo);
+	public void removerProduto(String tipo, int codigo) {
+		Produto produto = buscarProduto(tipo ,codigo);
 		if (produto != null) {
 			produtoRepositorio.removerProduto(produto.getNome() ,codigo); // Remove do repositório
 		}
@@ -70,8 +72,8 @@ public class EstoqueManager implements IEstoqueManager {
 
 	// Método auxiliar para buscar um produto pelo código
 	@Override
-	public Produto buscarProduto(String nome, int codigo) {
-		if(nome == "Camisa") {
+	public Produto buscarProduto(String tipo, int codigo) {
+		if(tipo == "Camisa") {
 			for (Produto produto : produtoRepositorio.listarCamisas()) { // Usa o repositório para buscar
 				if (produto.getCodigo() == codigo) {
 					return produto;
@@ -85,7 +87,7 @@ public class EstoqueManager implements IEstoqueManager {
 			}
 		}
 		
-		System.out.println("Produto não encontrado.");
+		System.out.println("Produto buscado não encontrado.");
 		return null;
 	}
 

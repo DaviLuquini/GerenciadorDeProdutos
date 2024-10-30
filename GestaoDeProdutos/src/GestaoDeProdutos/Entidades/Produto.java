@@ -1,19 +1,25 @@
 package GestaoDeProdutos.Entidades;
 
 public abstract class Produto {
+	private String tipo;      // Tipo do produto
     private int codigo;       // Código do produto
     private String nome;      // Nome do produto
     private int quantidade;   // Quantidade em estoque
     private double preco;     // Preço unitário do produto
 
-    public Produto(int codigo, String nome, int quantidade, double preco) {
-        this.codigo = codigo;
+    public Produto(String tipo ,int codigo, String nome, int quantidade, double preco) {
+        this.tipo = tipo;
+    	this.codigo = codigo;
         this.nome = nome;
         this.quantidade = quantidade;
         this.preco = preco;
     }
 
     // Getters e setters
+    public String getTipo() {
+        return tipo;
+    }
+    
     public int getCodigo() {
         return codigo;
     }

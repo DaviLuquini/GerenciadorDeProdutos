@@ -2,12 +2,12 @@ package GestaoDeProdutos.Entidades;
 
 public class Bermuda extends Produto {
 	public String Cor;
-	public int Tamanho;
+	public int Comprimento;
 	
-	public Bermuda(int codigo, String nome, int quantidade, double preco, String cor, int tamanho) {
-		super(codigo, nome, quantidade, preco);
+	public Bermuda(String tipo, int codigo, String nome, int quantidade, double preco, String cor, int comprimento) {
+		super(tipo, codigo, nome, quantidade, preco);
 		this.Cor = cor;
-		this.Tamanho = tamanho;
+		this.Comprimento = comprimento;
 	}
 	
 	public String getCor() {
@@ -18,12 +18,12 @@ public class Bermuda extends Produto {
 		Cor = cor;
 	}
 
-	public int getTamanho() {
-		return Tamanho;
+	public int getComprimento() {
+		return Comprimento;
 	}
 
-	public void setTamanho(int tamanho) {
-		Tamanho = tamanho;
+	public void setComprimento(int comprimento) {
+		Comprimento = comprimento;
 	}
 
 
