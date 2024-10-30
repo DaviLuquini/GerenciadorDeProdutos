@@ -27,7 +27,7 @@ public class Programa {
 
         // Atualizando a quantidade de uma Camisa
         System.out.println("\nAtualizando a quantidade de Camisa Polo para 15...");
-        estoqueManagerServico.atualizarQuantidade("Camisa", 9, 15);
+        estoqueManagerServico.atualizarQuantidade("Camisa", 1, 15);
 
         // Listando todos os produtos novamente para ver a atualização
         System.out.println("\nLista de produtos após atualização:");
@@ -35,7 +35,7 @@ public class Programa {
 
         // Removendo a Bermuda do estoque
         System.out.println("\nRemovendo Bermuda Jeans do estoque...");
-        estoqueManagerServico.removerProduto("Bermuda" , 23);
+        estoqueManagerServico.removerProduto("Bermuda" , 1);
 
         // Listando todos os produtos para verificar a remoção
         System.out.println("\nLista de produtos após remoção:");
