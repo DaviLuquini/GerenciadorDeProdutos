@@ -41,9 +41,8 @@ public class EstoqueManager implements IEstoqueManager {
 		if (produto != null) {
 			produto.setQuantidade(novaQuantidade);
 			produtoRepositorio.atualizarQuantidade(produto); // Atualiza no repositório
-            System.out.println("Quantidade do produto atualizada: " + produto.getNome() + " - " + produto.getQuantidade());
 		} else {
-			System.out.println("Produto para atualizar quantidade não encotrado");
+			System.out.println("Produto para atualizar quantidade não encontrado.");
 		}
 	}
 
@@ -52,7 +51,9 @@ public class EstoqueManager implements IEstoqueManager {
 	public void removerProduto(String tipo, int codigo) {
 		Produto produto = buscarProduto(tipo ,codigo);
 		if (produto != null) {
-			produtoRepositorio.removerProduto(produto.getNome() ,codigo); // Remove do repositório
+			produtoRepositorio.removerProduto(produto); // Remove do repositório
+		} else {
+			System.out.println("Produto procurado para remover nao encontrado.");
 		}
 	}
 
@@ -61,12 +62,12 @@ public class EstoqueManager implements IEstoqueManager {
 	public void listarProdutos() {
 		List<Camisa> listaDeCamisas = produtoRepositorio.listarCamisas(); // Lista todas camisas do repositório
 		for (Produto produto : listaDeCamisas) {
-		    System.out.println(produto.getNome() + " - " + produto.getQuantidade());
+		    System.out.println("Camisa " + produto.getNome() + " - " + produto.getQuantidade() + "und.");
 		}
 		
 		List<Bermuda> listaDeBermudas = produtoRepositorio.listarBermudas(); // Lista todas bermudas do repositório
 		for (Produto produto : listaDeBermudas) {
-		    System.out.println(produto.getNome() + " - " + produto.getQuantidade());
+		    System.out.println("Bermuda " + produto.getNome() + " - " + produto.getQuantidade() + "und.");
 		}
 	}
 

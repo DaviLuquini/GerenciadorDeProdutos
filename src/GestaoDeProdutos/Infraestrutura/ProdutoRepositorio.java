@@ -66,26 +66,18 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 	// Atualiza a quantidade de um produto em estoque
 	@Override
 	public void atualizarQuantidade(Produto produto) {
-		Produto produtoExistente;
-		
-		if(produto.getTipo() == "Camisa") {
-			 produtoExistente = buscarCamisa(produto.getCodigo());
-		} else {
-			 produtoExistente = buscarBermuda(produto.getCodigo());
-		}
-
-		if (produtoExistente != null) {
+		if (produto != null) {
 			// Defina a tabela com base no tipo de produto
-			String tabela = produtoExistente.getTipo().equals("Camisa") ? "camisas" : "bermudas";
+			String tabela = produto.getTipo().equals("Camisa") ? "camisas" : "bermudas";
 			String sql = "UPDATE " + tabela + " SET quantidade = ? WHERE codigo = ?";
 
 			try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
-				statement.setInt(1, produtoExistente.getQuantidade());
-				statement.setInt(2, produtoExistente.getCodigo());
+				statement.setInt(1, produto.getQuantidade());
+				statement.setInt(2, produto.getCodigo());
 				statement.executeUpdate();
 
-				System.out.println("Quantidade atualizada com sucesso.");
+	            System.out.println("Quantidade do produto atualizada: " + produto.getTipo() + " " + produto.getNome() + " - " + produto.getQuantidade());
 			} catch (SQLException e) {
 				System.err.println("Erro ao atualizar quantidade: " + e.getMessage());
 			}
@@ -96,21 +88,14 @@ public class ProdutoRepositorio implements IProdutoRepositorio {
 
 	// Remove um produto do estoque
 	@Override
-	public void removerProduto(String tipo, int codigo) {
-		Produto produtoExistente;
-		
-		if(tipo == "Camisa") {
-			 produtoExistente = buscarCamisa(codigo);
-		} else {
-			 produtoExistente = buscarBermuda(codigo);
-		}
-		
-		if (produtoExistente != null) {
-			String sql = "DELETE FROM " + tipo + " WHERE codigo = ?";
+	public void removerProduto(Produto produto) {
+		if (produto != null) {
+			String tabela = produto.getTipo().equals("Camisa") ? "camisas" : "bermudas";
+			String sql = "DELETE FROM " + tabela + " WHERE codigo = ?";
 
 			try (PreparedStatement statement = dbConnection.getConnection().prepareStatement(sql)) {
 
-				statement.setInt(1, produtoExistente.getCodigo());
+				statement.setInt(1, produto.getCodigo());
 				int rowsAffected = statement.executeUpdate();
 
 				if (rowsAffected > 0) {

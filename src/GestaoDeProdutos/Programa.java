@@ -1,4 +1,6 @@
 package GestaoDeProdutos;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import GestaoDeProdutos.Entidades.*;
@@ -12,30 +14,37 @@ public class Programa {
         IProdutoRepositorio produtoRepositorio = new ProdutoRepositorio(produtoFabrica);
         EstoqueManager estoqueManagerServico = new EstoqueManager(produtoRepositorio, produtoFabrica);
         Random random = new Random();
-        int randomCodigoCamisa = random.nextInt(100) + 1; // Gera um número de 1 a 100
-        int randomCodigoBermuda = random.nextInt(100) + 1; // Gera um número de 1 a 100
+        List<String> nomesAleatoriosCamisa = Arrays.asList("Polo Ralph Lauren", "Lacoste", "Calvin Klein", "Levis");
+        List<String> nomesAleatoriosBermuda = Arrays.asList("Lacoste" ,"Adidas" ,"Nike" ,"Levis");
+        
+        int randomCodigoProduto = random.nextInt(100) + 1; // Gera um número de 1 a 100
+        int randomNomeProduto = random.nextInt(nomesAleatoriosCamisa.size());
+        
 
-        // Adicionando uma Camisa
-        //estoqueManagerServico.adicionarCamisa("Camisa", randomCodigoCamisa, "Camisa Polo", 10, 49.90, "Curta", "M");
-
-        // Adicionando uma Bermuda
-        //estoqueManagerServico.adicionarBermuda("Bermuda", randomCodigoBermuda, "Bermuda Jeans", 5, 79.90, "Azul", 38);
+        // Adicionando uma Camisa aleatoria & Bermuda Lacoste
+        estoqueManagerServico.adicionarCamisa("Camisa", randomCodigoProduto, nomesAleatoriosCamisa.get(randomNomeProduto), 30, 49.90, "Curta", "M");
+        estoqueManagerServico.adicionarCamisa("Camisa", 100, "Lacoste", 10, 69.90, "Longa", "GG");
+        
+        // Adicionando uma Bermuda aleatoria & Bermuda Adidas
+        estoqueManagerServico.adicionarBermuda("Bermuda", randomCodigoProduto, nomesAleatoriosBermuda.get(randomNomeProduto), 5, 79.90, "Azul", 38);
+        estoqueManagerServico.adicionarBermuda("Bermuda", 200, "Adidas", 35, 40.20, "Preta", 40);
 
         // Listando todos os produtos
         System.out.println("\nLista de produtos no estoque:");
         estoqueManagerServico.listarProdutos();
 
         // Atualizando a quantidade de uma Camisa
-        System.out.println("\nAtualizando a quantidade de Camisa Polo para 15...");
-        estoqueManagerServico.atualizarQuantidade("Camisa", 1, 15);
+        System.out.println("\nAtualizando a quantidade da Camisa Lacoste para 15...");
+        estoqueManagerServico.atualizarQuantidade("Camisa", 100, 15);
 
         // Listando todos os produtos novamente para ver a atualização
         System.out.println("\nLista de produtos após atualização:");
         estoqueManagerServico.listarProdutos();
 
-        // Removendo a Bermuda do estoque
-        System.out.println("\nRemovendo Bermuda Jeans do estoque...");
-        estoqueManagerServico.removerProduto("Bermuda" , 1);
+        // Removendo a Camisa Lacoste & Bermuda Adidas do estoque
+        System.out.println("\nRemovendo Camisa Lacoste & Bermuda Adidas do estoque...");
+        estoqueManagerServico.removerProduto("Camisa" , 100);
+        estoqueManagerServico.removerProduto("Bermuda" , 200);
 
         // Listando todos os produtos para verificar a remoção
         System.out.println("\nLista de produtos após remoção:");
@@ -43,8 +52,10 @@ public class Programa {
 
      // Tentando buscar um produto existente
         System.out.println("\nBuscando um produto existente:");
-        Produto produtoBuscado = estoqueManagerServico.buscarProduto("Camisa" ,9);
-        System.out.println(produtoBuscado.getNome());
+        Produto produtoBuscado = estoqueManagerServico.buscarProduto("Camisa" ,100);
+        if(produtoBuscado != null) {
+            System.out.println("Produto encontrado: " + "Camisa " + produtoBuscado.getNome() + " - " + produtoBuscado.getQuantidade() + "und.");
+        }
         
         // Tentando buscar um produto que não existe
         System.out.println("\nBuscando um produto inexistente:");
