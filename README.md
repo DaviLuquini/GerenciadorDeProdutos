@@ -1,5 +1,6 @@
 GerenciadorDeProdutos 📦
 Um sistema de gerenciamento de produtos desenvolvido em Java, implementando princípios DDD e SOLID. O sistema oferece controle de inventário através de interface GUI, permitindo operações CRUD, gestão de notas de compra/venda e controle de estoque.
+<br>
 👉 Funcionalidades:
 
 Cadastro e gerenciamento de produtos
