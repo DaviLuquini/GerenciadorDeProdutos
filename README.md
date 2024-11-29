@@ -3,32 +3,37 @@ Um sistema de gerenciamento de produtos desenvolvido em Java, implementando prin
 👉 Funcionalidades:
 
 Cadastro e gerenciamento de produtos
+<br>
 Registro de notas de compra e venda
+<br>
 Atualizações de estoque
+<br>
 Interface gráfica com Java Swing
+<br>
 Interface de linha de comando
+<br>
 Persistência em banco de dados
 
 Construído com:
 
-Java
-Java Swing
-SQL
-Padrões Repository e Factory
+Java,
+Java Swing,
+SQL,
+Padrões Repository e Factory,
 
 Arquitetura:
 
-Domain-Driven Design (DDD)
-Princípios SOLID
-Clean Architecture
-Injeção de Dependência
+Domain-Driven Design (DDD),
+Princípios SOLID,
+Clean Architecture,
+Injeção de Dependência,
 
 O projeto implementa uma estrutura em camadas:
 
-Domínio (Entidades)
-Infraestrutura (Repositórios)
-Serviços (Gerenciadores)
-Interface (GUI)
+Domínio (Entidades),
+Infraestrutura (Repositórios),
+Serviços (Gerenciadores),
+Interface (GUI),
 
 - Cadastro de Produto
 ![Captura de tela 2024-11-29 142131](https://github.com/user-attachments/assets/a55ebb79-866a-48f2-b32e-52db58315a82)
