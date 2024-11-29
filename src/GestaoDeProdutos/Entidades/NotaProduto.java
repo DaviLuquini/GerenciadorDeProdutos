@@ -3,7 +3,7 @@ package GestaoDeProdutos.Entidades;
 import java.time.LocalDate;
 
 public class NotaProduto {
-    private int produtoId;
+	private int produtoId;
     private String tipo; 
     private int quantidade;
     private double preco;
@@ -62,4 +62,11 @@ public class NotaProduto {
     public void setData(LocalDate data) {
         this.data = data;
     }
+    
+    @Override
+	public String toString() {
+		return "NotaProduto [produtoId=" + produtoId + ", tipo=" + tipo + ", quantidade=" + quantidade + ", preco="
+				+ preco + ", data=" + data + "]";
+	}
+
 }

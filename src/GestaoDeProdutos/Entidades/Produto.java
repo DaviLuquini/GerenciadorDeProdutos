@@ -3,7 +3,8 @@ package GestaoDeProdutos.Entidades;
 import java.time.LocalDate;
 
 public class Produto {
-    private int produtoId;         // Identificador único do produto
+
+	private int produtoId;         // Identificador único do produto
     private String nome;           // Nome do produto
     private String categoria;      // Categoria do produto
     private int quantidadeEstoque; // Quantidade em estoque
@@ -58,4 +59,10 @@ public class Produto {
     public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
+    
+    @Override
+	public String toString() {
+		return "Produto [produtoId=" + produtoId + ", nome=" + nome + ", categoria=" + categoria
+				+ ", quantidadeEstoque=" + quantidadeEstoque + ", dataCadastro=" + dataCadastro + "]";
+	}
 }

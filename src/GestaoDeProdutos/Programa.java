@@ -14,10 +14,10 @@ import GestaoDeProdutos.Entidades.NotaProduto;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collections;
-import java.util.Comparator;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Programa {
 
@@ -33,215 +33,204 @@ public class Programa {
 		NotaManager notaManager = new NotaManager(produtoRepositorio, notaProdutoRepositorio);
 
 		// Criando a interface gráfica
-		SwingUtilities.invokeLater(() -> criarInterface(produtoManager, notaManager));
-
-		Scanner sc = new Scanner(System.in);
-		boolean encerrarPrograma = false;
-
-		while (!encerrarPrograma) {
-			exibirMenu();
-			int opcao = lerInteiro(sc, "Digite uma opção: ");
-
+		SwingUtilities.invokeLater(() -> {
 			try {
-				switch (opcao) {
-				case 1 -> cadastrarProduto(produtoManager, sc);
-				case 2 -> adicionarNota(notaManager, sc);
-				case 3 -> atualizarEstoque(produtoManager, sc);
-				case 4 -> excluirProduto(produtoManager, sc);
-				case 5 -> listarProdutos(produtoManager);
-				case 6 -> listarNotas(notaManager);
-				case 7 -> {
-					encerrarPrograma = true;
-					System.out.println("Programa encerrado.");
-				}
-				default -> System.out.println("Opção inválida. Tente novamente.");
-				}
-			} catch (Exception e) {
-				System.out.println("Erro: " + e.getMessage());
+				criarInterface(produtoManager, notaManager);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		}
+		});
 
-		sc.close();
 	}
-
-	private static void exibirMenu() {
-		System.out.println("\nSelecione uma opção:");
-		System.out.println("(1) Cadastrar Produto");
-		System.out.println("(2) Adicionar Nota (Compra/Venda)");
-		System.out.println("(3) Atualizar Estoque");
-		System.out.println("(4) Excluir Produto");
-		System.out.println("(5) Listar Produtos");
-		System.out.println("(6) Listar Notas");
-		System.out.println("(7) Sair");
-	}
-
-	private static void cadastrarProduto(ProdutoManager produtoManager, Scanner sc) throws Exception {
-		System.out.println("=== Cadastrar Produto ===");
-		int produtoId = lerInteiro(sc, "Digite o código do produto: ");
-		System.out.println("Digite o nome do produto:");
-		sc.nextLine(); // Consumir quebra de linha
-		String nome = sc.nextLine();
-		System.out.println("Digite a categoria do produto:");
-		String categoria = sc.nextLine();
-		int quantidade = lerInteiro(sc, "Digite a quantidade inicial em estoque: ");
-
-		produtoManager.cadastrarProduto(produtoId, nome, categoria, quantidade);
-		System.out.println("Produto cadastrado com sucesso!");
-	}
-
-	private static void adicionarNota(NotaManager notaManager, Scanner sc) throws Exception {
-		System.out.println("=== Adicionar Nota (Compra/Venda) ===");
-		int produtoId = lerInteiro(sc, "Digite o código do produto: ");
-		System.out.println("Digite o tipo de nota (Compra/Venda):");
-		sc.nextLine(); // Consumir quebra de linha
-		String tipo = sc.nextLine().toLowerCase();
-		int quantidade = lerInteiro(sc, "Digite a quantidade: ");
-		double preco = lerDouble(sc, "Digite o preço unitário: ");
-
-		if (tipo.equals("compra")) {
-			notaManager.adicionarNotaCompra(produtoId, quantidade, preco);
-			System.out.println("Nota de compra adicionada com sucesso!");
-		} else if (tipo.equals("venda")) {
-			notaManager.adicionarNotaVenda(produtoId, quantidade, preco);
-			System.out.println("Nota de venda adicionada com sucesso!");
-		} else {
-			System.out.println("Tipo de nota inválido. Use 'Compra' ou 'Venda'.");
-		}
-	}
-
-	private static void atualizarEstoque(ProdutoManager produtoManager, Scanner sc) throws Exception {
-		System.out.println("=== Atualizar Estoque ===");
-		int produtoId = lerInteiro(sc, "Digite o código do produto: ");
-		int novaQuantidade = lerInteiro(sc, "Digite a nova quantidade em estoque: ");
-
-		produtoManager.atualizarProduto(produtoId, novaQuantidade);
-		System.out.println("Estoque atualizado com sucesso!");
-	}
-
-	private static void excluirProduto(ProdutoManager produtoManager, Scanner sc) throws Exception {
-		System.out.println("=== Excluir Produto ===");
-		int produtoId = lerInteiro(sc, "Digite o código do produto a ser excluído: ");
-
-		produtoManager.excluirProduto(produtoId);
-		System.out.println("Produto excluído com sucesso!");
-	}
-
-	private static void listarProdutos(ProdutoManager produtoManager) throws Exception {
-		System.out.println("=== Lista de Produtos ===");
-		for (Produto produto : produtoManager.listarProdutos()) {
-			System.out.println("ID: " + produto.getProdutoId() + ", Nome: " + produto.getNome() + ", Categoria: "
-					+ produto.getCategoria() + ", Quantidade: " + produto.getQuantidadeEstoque());
-		}
-	}
-
-	private static void listarNotas(NotaManager notaManager) throws Exception {
-		System.out.println("=== Lista de Notas de Produto ===");
-
-		// Obtém a lista de notas de produto através do serviço
-		for (NotaProduto nota : notaManager.listarNotas()) {
-			System.out.println("Produto ID: " + nota.getProdutoId() + ", Tipo: " + nota.getTipo() + ", Quantidade: "
-					+ nota.getQuantidade() + ", Preço: " + nota.getPreco() + ", Data: " + nota.getData());
-		}
-	}
-
-	private static int lerInteiro(Scanner sc, String mensagem) {
-		System.out.print(mensagem);
-		while (!sc.hasNextInt()) {
-			System.out.println("Entrada inválida. Digite um número inteiro.");
-			sc.next();
-		}
-		return sc.nextInt();
-	}
-
-	private static double lerDouble(Scanner sc, String mensagem) {
-		System.out.print(mensagem);
-		while (!sc.hasNextDouble()) {
-			System.out.println("Entrada inválida. Digite um número decimal.");
-			sc.next();
-		}
-		return sc.nextDouble();
-	}
-
 	
 	//Interface Gráfica 
 	
-	private static void criarInterface(ProdutoManager produtoManager, NotaManager notaManager) {
-		JFrame frame = new JFrame("Gestão de Produtos");
-		frame.setSize(600, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
+	private static void criarInterface(ProdutoManager produtoManager, NotaManager notaManager) throws SQLException {
+	    JFrame frame = new JFrame("Gestão de Produtos");
+	    frame.setSize(800, 600);
+	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    frame.setLayout(new BorderLayout());
 
-		// Criar painel para mostrar a lista de produtos e notas
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    // Painel de botões
+	    JPanel buttonPanel = new JPanel();
+	    buttonPanel.setLayout(new GridLayout(0, 1, 5, 5)); // Botões empilhados
 
-		// Adiciona as listas de produtos e notas
-		panel.add(criarListaProdutos(produtoManager));
-		panel.add(criarListaNotas(notaManager));
+	    // Adiciona os botões para cada funcionalidade
+	    JButton btnCadastrarProduto = new JButton("Cadastrar Produto");
+	    btnCadastrarProduto.addActionListener(e -> executarCadastrarProduto(produtoManager));
 
-		frame.add(panel, BorderLayout.CENTER);
+	    JButton btnAdicionarNota = new JButton("Adicionar Nota");
+	    btnAdicionarNota.addActionListener(e -> executarAdicionarNota(notaManager));
 
-		// Adicionando um botão de fechar
-		JButton btnClose = new JButton("Fechar");
-		btnClose.addActionListener(e -> frame.dispose());
-		frame.add(btnClose, BorderLayout.SOUTH);
+	    JButton btnAtualizarEstoque = new JButton("Atualizar Estoque");
+	    btnAtualizarEstoque.addActionListener(e -> executarAtualizarEstoque(produtoManager));
 
-		// Exibindo a interface
-		frame.setVisible(true);
+	    JButton btnExcluirProduto = new JButton("Excluir Produto");
+	    btnExcluirProduto.addActionListener(e -> executarExcluirProduto(produtoManager));
+
+	    JButton btnListarProdutos = new JButton("Listar Produtos");
+	    btnListarProdutos.addActionListener(e -> executarListarProdutos(produtoManager));
+
+	    JButton btnListarNotas = new JButton("Listar Notas");
+	    btnListarNotas.addActionListener(e -> executarListarNotas(notaManager));
+
+	    JButton btnFechar = new JButton("Fechar");
+	    btnFechar.addActionListener(e -> frame.dispose());
+
+	    // Adicionando os botões ao painel de botões
+	    buttonPanel.add(btnCadastrarProduto);
+	    buttonPanel.add(btnAdicionarNota);
+	    buttonPanel.add(btnAtualizarEstoque);
+	    buttonPanel.add(btnExcluirProduto);
+	    buttonPanel.add(btnListarProdutos);
+	    buttonPanel.add(btnListarNotas);
+	    buttonPanel.add(btnFechar);
+
+	    // Adicionando o painel de botões ao frame
+	    frame.add(buttonPanel, BorderLayout.CENTER);
+
+	    frame.setVisible(true);
 	}
 
-	// Criação da lista de produtos
-	private static JScrollPane criarListaProdutos(ProdutoManager produtoManager) {
-	    JTextArea textAreaProdutos = new JTextArea();
-	    textAreaProdutos.setEditable(false);
+	// Métodos para cada funcionalidade
 
-	    // Obtém a lista de produtos
+	private static void executarCadastrarProduto(ProdutoManager produtoManager) {
+	    // Exemplo: abrir um diálogo para entrada de dados
+	    JTextField produtoIdField = new JTextField();
+	    JTextField nomeField = new JTextField();
+	    JTextField categoriaField = new JTextField();
+	    JTextField quantidadeField = new JTextField();
+
+	    Object[] message = {
+	        "Código do Produto:", produtoIdField,
+	        "Nome:", nomeField,
+	        "Categoria:", categoriaField,
+	        "Quantidade Inicial:", quantidadeField,
+	    };
+
+	    int option = JOptionPane.showConfirmDialog(null, message, "Cadastrar Produto", JOptionPane.OK_CANCEL_OPTION);
+	    if (option == JOptionPane.OK_OPTION) {
+	        try {
+	            int produtoId = Integer.parseInt(produtoIdField.getText());
+	            String nome = nomeField.getText();
+	            String categoria = categoriaField.getText();
+	            int quantidade = Integer.parseInt(quantidadeField.getText());
+
+	            produtoManager.cadastrarProduto(produtoId, nome, categoria, quantidade);
+	            JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(null, "Erro ao cadastrar produto: " + ex.getMessage());
+	        }
+	    }
+	}
+
+	private static void executarAdicionarNota(NotaManager notaManager) {
+	    // Exemplo: abrir um diálogo para entrada de dados
+	    JTextField produtoIdField = new JTextField();
+	    String[] tipos = {"Compra", "Venda"};
+	    JComboBox<String> tipoBox = new JComboBox<>(tipos);
+	    JTextField quantidadeField = new JTextField();
+	    JTextField precoField = new JTextField();
+
+	    Object[] message = {
+	        "Código do Produto:", produtoIdField,
+	        "Tipo de Nota:", tipoBox,
+	        "Quantidade:", quantidadeField,
+	        "Preço Unitário:", precoField,
+	    };
+
+	    int option = JOptionPane.showConfirmDialog(null, message, "Adicionar Nota", JOptionPane.OK_CANCEL_OPTION);
+	    if (option == JOptionPane.OK_OPTION) {
+	        try {
+	            int produtoId = Integer.parseInt(produtoIdField.getText());
+	            String tipo = (String) tipoBox.getSelectedItem();
+	            int quantidade = Integer.parseInt(quantidadeField.getText());
+	            double preco = Double.parseDouble(precoField.getText());
+
+	            if ("Compra".equals(tipo)) {
+	                notaManager.adicionarNotaCompra(produtoId, quantidade, preco);
+	            } else {
+	                notaManager.adicionarNotaVenda(produtoId, quantidade, preco);
+	            }
+	            JOptionPane.showMessageDialog(null, "Nota adicionada com sucesso!");
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(null, "Erro ao adicionar nota: " + ex.getMessage());
+	        }
+	    }
+	}
+
+	private static void executarAtualizarEstoque(ProdutoManager produtoManager) {
+	    JTextField produtoIdField = new JTextField();
+	    JTextField quantidadeField = new JTextField();
+
+	    Object[] message = {
+	        "Código do Produto:", produtoIdField,
+	        "Nova Quantidade:", quantidadeField,
+	    };
+
+	    int option = JOptionPane.showConfirmDialog(null, message, "Atualizar Estoque", JOptionPane.OK_CANCEL_OPTION);
+	    if (option == JOptionPane.OK_OPTION) {
+	        try {
+	            int produtoId = Integer.parseInt(produtoIdField.getText());
+	            int quantidade = Integer.parseInt(quantidadeField.getText());
+	            produtoManager.atualizarProduto(produtoId, quantidade);
+	            JOptionPane.showMessageDialog(null, "Estoque atualizado com sucesso!");
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(null, "Erro ao atualizar estoque: " + ex.getMessage());
+	        }
+	    }
+	}
+
+	private static void executarExcluirProduto(ProdutoManager produtoManager) {
+	    JTextField produtoIdField = new JTextField();
+
+	    Object[] message = {
+	        "Código do Produto:", produtoIdField,
+	    };
+
+	    int option = JOptionPane.showConfirmDialog(null, message, "Excluir Produto", JOptionPane.OK_CANCEL_OPTION);
+	    if (option == JOptionPane.OK_OPTION) {
+	        try {
+	            int produtoId = Integer.parseInt(produtoIdField.getText());
+	            produtoManager.excluirProduto(produtoId);
+	            JOptionPane.showMessageDialog(null, "Produto excluído com sucesso!");
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(null, "Erro ao excluir produto: " + ex.getMessage());
+	        }
+	    }
+	}
+
+	private static void executarListarProdutos(ProdutoManager produtoManager) {
 	    try {
 	        List<Produto> produtos = produtoManager.listarProdutos();
-
-	        // Ordena a lista de produtos pelo ProdutoId em ordem crescente
-	        Collections.sort(produtos, Comparator.comparingInt(Produto::getProdutoId));
-
-	        // Exibe os produtos na ordem correta
+	        StringBuilder mensagem = new StringBuilder("=== Lista de Produtos ===\n");
 	        for (Produto produto : produtos) {
-	            textAreaProdutos.append("ID: " + produto.getProdutoId() + ", Nome: " + produto.getNome() + ", Categoria: "
-	                    + produto.getCategoria() + ", Quantidade: " + produto.getQuantidadeEstoque() + "\n");
+	            mensagem.append("ID: ").append(produto.getProdutoId())
+	                .append(", Nome: ").append(produto.getNome())
+	                .append(", Categoria: ").append(produto.getCategoria())
+	                .append(", Quantidade: ").append(produto.getQuantidadeEstoque()).append("\n");
 	        }
-	    } catch (Exception e) {
-	        textAreaProdutos.append("Erro ao carregar produtos: " + e.getMessage());
+	        JOptionPane.showMessageDialog(null, mensagem.toString());
+	    } catch (Exception ex) {
+	        JOptionPane.showMessageDialog(null, "Erro ao listar produtos: " + ex.getMessage());
 	    }
-
-	    // Envolvendo a lista de produtos em um JScrollPane para permitir rolagem
-	    JScrollPane scrollPane = new JScrollPane(textAreaProdutos);
-	    scrollPane.setBorder(BorderFactory.createTitledBorder("Lista de Produtos"));
-	    return scrollPane;
 	}
 
-	// Criação da lista de notas
-	private static JScrollPane criarListaNotas(NotaManager notaManager) {
-	    JTextArea textAreaNotas = new JTextArea();
-	    textAreaNotas.setEditable(false);
-
-	    // Obtém a lista de notas
+	private static void executarListarNotas(NotaManager notaManager) {
 	    try {
 	        List<NotaProduto> notas = notaManager.listarNotas();
-
-	        // Ordena a lista de notas pelo ProdutoId em ordem crescente
-	        Collections.sort(notas, Comparator.comparingInt(NotaProduto::getProdutoId));
-
-	        // Exibe as notas na ordem correta
+	        StringBuilder mensagem = new StringBuilder("=== Lista de Notas ===\n");
 	        for (NotaProduto nota : notas) {
-	            textAreaNotas.append("Produto ID: " + nota.getProdutoId() + ", Tipo: " + nota.getTipo()
-	                    + ", Quantidade: " + nota.getQuantidade() + ", Preço: R$" + nota.getPreco() + ", Data: "
-	                    + nota.getData() + "\n");
+	            mensagem.append("Produto ID: ").append(nota.getProdutoId())
+	                .append(", Tipo: ").append(nota.getTipo())
+	                .append(", Quantidade: ").append(nota.getQuantidade())
+	                .append(", Preço: R$").append(nota.getPreco())
+	                .append(", Data: ").append(nota.getData()).append("\n");
 	        }
-	    } catch (Exception e) {
-	        textAreaNotas.append("Erro ao carregar notas: " + e.getMessage());
+	        JOptionPane.showMessageDialog(null, mensagem.toString());
+	    } catch (Exception ex) {
+	        JOptionPane.showMessageDialog(null, "Erro ao listar notas: " + ex.getMessage());
 	    }
-
-	    // Envolvendo a lista de notas em um JScrollPane para permitir rolagem
-	    JScrollPane scrollPane = new JScrollPane(textAreaNotas);
-	    scrollPane.setBorder(BorderFactory.createTitledBorder("Lista de Notas"));
-	    return scrollPane;
 	}
 }
