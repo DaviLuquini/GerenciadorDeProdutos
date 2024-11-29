@@ -36,9 +36,27 @@ public class DbConnection implements AutoCloseable {
         }
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            reestabelecerConexao(); // Método para reabrir a conexão
+        }
         return connection;
     }
+
+    private void reestabelecerConexao() throws SQLException {
+        Properties properties = new Properties();
+        try (FileInputStream input = new FileInputStream("C:\\Users\\davil\\eclipse-workspace\\GerenciamentoDeProdutos\\src\\db.properties")) {
+            properties.load(input);
+            String url = properties.getProperty("dburl");
+            String user = properties.getProperty("user");
+            String password = properties.getProperty("password");
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar o arquivo de propriedades: " + e.getMessage());
+            throw new SQLException("Não foi possível reestabelecer a conexão", e);
+        }
+    }
+
 
     @Override
     public void close() {

@@ -1,64 +1,156 @@
 package GestaoDeProdutos;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
-import GestaoDeProdutos.Entidades.*;
+import java.util.Scanner;
+import GestaoDeProdutos.Entidades.Produto;
+import GestaoDeProdutos.Entidades.ProdutoFabrica;
+import GestaoDeProdutos.Entidades.IProdutoFabrica;
+import GestaoDeProdutos.Entidades.NotaProduto;
 import GestaoDeProdutos.Infraestrutura.*;
-import GestaoDeProdutos.Servico.EstoqueManager;
+import GestaoDeProdutos.Servico.*;
 
 public class Programa {
     public static void main(String[] args) {
-        // Inicializando o repositório, fábrica e serviço
+        // Inicializando repositórios e gerenciadores
+    	DbConnection dbConnection = new DbConnection();
+    	
+        IProdutoRepositorio produtoRepositorio = new ProdutoRepositorio(dbConnection);
+        INotaProdutoRepositorio notaProdutoRepositorio = new NotaProdutoRepositorio(dbConnection);
         IProdutoFabrica produtoFabrica = new ProdutoFabrica();
-        IProdutoRepositorio produtoRepositorio = new ProdutoRepositorio(produtoFabrica);
-        EstoqueManager estoqueManagerServico = new EstoqueManager(produtoRepositorio, produtoFabrica);
-        Random random = new Random();
-        List<String> nomesAleatoriosCamisa = Arrays.asList("Polo Ralph Lauren", "Lacoste", "Calvin Klein", "Levis");
-        List<String> nomesAleatoriosBermuda = Arrays.asList("Lacoste" ,"Adidas" ,"Nike" ,"Levis");
         
-        int randomCodigoProduto = random.nextInt(100) + 1; // Gera um número de 1 a 100
-        int randomNomeProduto = random.nextInt(nomesAleatoriosCamisa.size());
-        
+        ProdutoManager produtoManager = new ProdutoManager(produtoRepositorio, produtoFabrica);
+        NotaManager notaManager = new NotaManager(produtoRepositorio, notaProdutoRepositorio);
 
-        // Adicionando uma Camisa aleatoria & Bermuda Lacoste
-        estoqueManagerServico.adicionarCamisa("Camisa", randomCodigoProduto, nomesAleatoriosCamisa.get(randomNomeProduto), 30, 49.90, "Curta", "M");
-        estoqueManagerServico.adicionarCamisa("Camisa", 100, "Lacoste", 10, 69.90, "Longa", "GG");
-        
-        // Adicionando uma Bermuda aleatoria & Bermuda Adidas
-        estoqueManagerServico.adicionarBermuda("Bermuda", randomCodigoProduto, nomesAleatoriosBermuda.get(randomNomeProduto), 5, 79.90, "Azul", 38);
-        estoqueManagerServico.adicionarBermuda("Bermuda", 200, "Adidas", 35, 40.20, "Preta", 40);
+        Scanner sc = new Scanner(System.in);
+        boolean encerrarPrograma = false;
 
-        // Listando todos os produtos
-        System.out.println("\nLista de produtos no estoque:");
-        estoqueManagerServico.listarProdutos();
+        while (!encerrarPrograma) {
+            exibirMenu();
+            int opcao = lerInteiro(sc, "Digite uma opção: ");
 
-        // Atualizando a quantidade de uma Camisa
-        System.out.println("\nAtualizando a quantidade da Camisa Lacoste para 15...");
-        estoqueManagerServico.atualizarQuantidade("Camisa", 100, 15);
-
-        // Listando todos os produtos novamente para ver a atualização
-        System.out.println("\nLista de produtos após atualização:");
-        estoqueManagerServico.listarProdutos();
-
-        // Removendo a Camisa Lacoste & Bermuda Adidas do estoque
-        System.out.println("\nRemovendo Camisa Lacoste & Bermuda Adidas do estoque...");
-        estoqueManagerServico.removerProduto("Camisa" , 100);
-        estoqueManagerServico.removerProduto("Bermuda" , 200);
-
-        // Listando todos os produtos para verificar a remoção
-        System.out.println("\nLista de produtos após remoção:");
-        estoqueManagerServico.listarProdutos();
-
-     // Tentando buscar um produto existente
-        System.out.println("\nBuscando um produto existente:");
-        Produto produtoBuscado = estoqueManagerServico.buscarProduto("Camisa" ,100);
-        if(produtoBuscado != null) {
-            System.out.println("Produto encontrado: " + "Camisa " + produtoBuscado.getNome() + " - " + produtoBuscado.getQuantidade() + "und.");
+            try {
+                switch (opcao) {
+                    case 1 -> cadastrarProduto(produtoManager, sc);
+                    case 2 -> adicionarNota(notaManager, sc);
+                    case 3 -> atualizarEstoque(produtoManager, sc);
+                    case 4 -> excluirProduto(produtoManager, sc);
+                    case 5 -> listarProdutos(produtoManager);
+                    case 6 -> listarNotas(notaManager);
+                    case 7 -> {
+                        encerrarPrograma = true;
+                        System.out.println("Programa encerrado.");
+                    }
+                    default -> System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
         }
+
+        sc.close();
+    }
+
+    private static void exibirMenu() {
+        System.out.println("\nSelecione uma opção:");
+        System.out.println("(1) Cadastrar Produto");
+        System.out.println("(2) Adicionar Nota (Compra/Venda)");
+        System.out.println("(3) Atualizar Estoque");
+        System.out.println("(4) Excluir Produto");
+        System.out.println("(5) Listar Produtos");
+        System.out.println("(6) Listar Notas");
+        System.out.println("(7) Sair");
+    }
+
+    private static void cadastrarProduto(ProdutoManager produtoManager, Scanner sc) throws Exception {
+        System.out.println("=== Cadastrar Produto ===");
+        int produtoId = lerInteiro(sc, "Digite o código do produto: ");
+        System.out.println("Digite o nome do produto:");
+        sc.nextLine(); // Consumir quebra de linha
+        String nome = sc.nextLine();
+        System.out.println("Digite a categoria do produto:");
+        String categoria = sc.nextLine();
+        int quantidade = lerInteiro(sc, "Digite a quantidade inicial em estoque: ");
+
+        produtoManager.cadastrarProduto(produtoId, nome, categoria, quantidade);
+        System.out.println("Produto cadastrado com sucesso!");
+    }
+
+    private static void adicionarNota(NotaManager notaManager, Scanner sc) throws Exception {
+        System.out.println("=== Adicionar Nota (Compra/Venda) ===");
+        int produtoId = lerInteiro(sc, "Digite o código do produto: ");
+        System.out.println("Digite o tipo de nota (Compra/Venda):");
+        sc.nextLine(); // Consumir quebra de linha
+        String tipo = sc.nextLine().toLowerCase();
+        int quantidade = lerInteiro(sc, "Digite a quantidade: ");
+        double preco = lerDouble(sc, "Digite o preço unitário: ");
+
+        if (tipo.equals("compra")) {
+            notaManager.adicionarNotaCompra(produtoId, quantidade, preco);
+            System.out.println("Nota de compra adicionada com sucesso!");
+        } else if (tipo.equals("venda")) {
+            notaManager.adicionarNotaVenda(produtoId, quantidade, preco);
+            System.out.println("Nota de venda adicionada com sucesso!");
+        } else {
+            System.out.println("Tipo de nota inválido. Use 'Compra' ou 'Venda'.");
+        }
+    }
+
+    private static void atualizarEstoque(ProdutoManager produtoManager, Scanner sc) throws Exception {
+        System.out.println("=== Atualizar Estoque ===");
+        int produtoId = lerInteiro(sc, "Digite o código do produto: ");
+        int novaQuantidade = lerInteiro(sc, "Digite a nova quantidade em estoque: ");
+
+        produtoManager.atualizarProduto(produtoId , novaQuantidade);
+        System.out.println("Estoque atualizado com sucesso!");
+    }
+
+    private static void excluirProduto(ProdutoManager produtoManager, Scanner sc) throws Exception {
+        System.out.println("=== Excluir Produto ===");
+        int produtoId = lerInteiro(sc, "Digite o código do produto a ser excluído: ");
+
+        produtoManager.excluirProduto(produtoId);
+        System.out.println("Produto excluído com sucesso!");
+    }
+
+    private static void listarProdutos(ProdutoManager produtoManager) throws Exception {
+        System.out.println("=== Lista de Produtos ===");
+        for (Produto produto : produtoManager.listarProdutos()) {
+            System.out.println(
+                    "ID: " + produto.getProdutoId() +
+                    ", Nome: " + produto.getNome() +
+                    ", Categoria: " + produto.getCategoria() +
+                    ", Quantidade: " + produto.getQuantidadeEstoque());
+        }
+    }
+    
+    private static void listarNotas(NotaManager notaManager) throws Exception {
+        System.out.println("=== Lista de Notas de Produto ===");
         
-        // Tentando buscar um produto que não existe
-        System.out.println("\nBuscando um produto inexistente:");
-        estoqueManagerServico.buscarProduto("Camisa" ,3);
+        // Obtém a lista de notas de produto através do serviço
+        for (NotaProduto nota : notaManager.listarNotas()) {
+            System.out.println(
+                "Produto ID: " + nota.getProdutoId() +
+                ", Tipo: " + nota.getTipo() +
+                ", Quantidade: " + nota.getQuantidade() +
+                ", Preço: " + nota.getPreco() +
+                ", Data: " + nota.getData());
+        }
+    }
+
+    private static int lerInteiro(Scanner sc, String mensagem) {
+        System.out.print(mensagem);
+        while (!sc.hasNextInt()) {
+            System.out.println("Entrada inválida. Digite um número inteiro.");
+            sc.next();
+        }
+        return sc.nextInt();
+    }
+
+    private static double lerDouble(Scanner sc, String mensagem) {
+        System.out.print(mensagem);
+        while (!sc.hasNextDouble()) {
+            System.out.println("Entrada inválida. Digite um número decimal.");
+            sc.next();
+        }
+        return sc.nextDouble();
     }
 }

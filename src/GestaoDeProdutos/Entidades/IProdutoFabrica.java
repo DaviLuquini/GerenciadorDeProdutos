@@ -1,8 +1,9 @@
 package GestaoDeProdutos.Entidades;
 
+import java.time.LocalDate;
+
 public interface IProdutoFabrica {
-    Camisa criarCamisa(String tipo, int codigo, String nome, int quantidade, double preco, String manga, String tamanho);
-    
-    Bermuda criarBermuda(String tipo, int codigo, String nome, int quantidade, double preco, String cor, int comprimento);
+	Produto criarProduto(int produtoId, String nome, String categoria, int quantidadeEstoque, LocalDate dataCadastro);
+	
 }
 

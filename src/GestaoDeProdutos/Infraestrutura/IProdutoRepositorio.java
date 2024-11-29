@@ -1,33 +1,23 @@
 package GestaoDeProdutos.Infraestrutura;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import GestaoDeProdutos.Entidades.Bermuda;
-import GestaoDeProdutos.Entidades.Camisa;
 import GestaoDeProdutos.Entidades.Produto;
 
 public interface IProdutoRepositorio {
-	// Adiciona uma camisa ao estoque
-    void adicionarCamisa(Camisa camisa);
-    
-	// Adiciona uma bermuda ao estoque
-    void adicionarBermuda(Bermuda bermuda);
+    // Método para inserir um produto no banco de dados
+    void inserirProduto(Produto produto) throws SQLException;
 
-    // Atualiza a quantidade de um produto em estoque
-	void atualizarQuantidade(Produto produto);
+    // Método para buscar um produto por ID
+    Produto buscarProdutoPorId(int produtoId) throws SQLException;
 
-    // Remove um produto do estoque
-	void removerProduto(Produto produto);
+    // Método para listar todos os produtos
+    List<Produto> listarProdutos() throws SQLException;
 
-    // Lista todos as camisas no estoque
-    List<Camisa> listarCamisas();
-    
-    // Lista todos as bermudas no estoque
-    List<Bermuda> listarBermudas();
-    
-    //Busca camisa no estoque
-    Camisa buscarCamisa(int codigo);
-    
-    //Busca bermuda no estoque
-    Bermuda buscarBermuda(int codigo);
- }
+    // Método para atualizar um produto existente
+    void atualizarProduto(Produto produto) throws SQLException;
+
+    // Método para excluir um produto pelo ID
+    void excluirProduto(int produtoId) throws SQLException;
+}

@@ -1,46 +1,61 @@
 package GestaoDeProdutos.Entidades;
 
-public abstract class Produto {
-	private String tipo;      // Tipo do produto
-    private int codigo;       // Código do produto
-    private String nome;      // Nome do produto
-    private int quantidade;   // Quantidade em estoque
-    private double preco;     // Preço unitário do produto
+import java.time.LocalDate;
 
-    public Produto(String tipo ,int codigo, String nome, int quantidade, double preco) {
-        this.tipo = tipo;
-    	this.codigo = codigo;
+public class Produto {
+    private int produtoId;         // Identificador único do produto
+    private String nome;           // Nome do produto
+    private String categoria;      // Categoria do produto
+    private int quantidadeEstoque; // Quantidade em estoque
+    private LocalDate dataCadastro; // Data de cadastro do produto
+
+    // Construtor
+    public Produto(int produtoId, String nome, String categoria, int quantidadeEstoque, LocalDate dataCadastro) {
+        this.produtoId = produtoId;
         this.nome = nome;
-        this.quantidade = quantidade;
-        this.preco = preco;
+        this.categoria = categoria;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.dataCadastro = dataCadastro;
     }
 
     // Getters e setters
-    public String getTipo() {
-        return tipo;
+    public int getProdutoId() {
+        return produtoId;
     }
-    
-    public int getCodigo() {
-        return codigo;
+
+    public void setProdutoId(int produtoId) {
+        this.produtoId = produtoId;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public int getQuantidade() {
-        return quantidade;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
+    public String getCategoria() {
+        return categoria;
     }
 
-    public double getPreco() {
-        return preco;
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
+    public int getQuantidadeEstoque() {
+        return quantidadeEstoque;
+    }
+
+    public void setQuantidadeEstoque(int quantidadeEstoque) {
+        this.quantidadeEstoque = quantidadeEstoque;
+    }
+
+    public LocalDate getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(LocalDate dataCadastro) {
+        this.dataCadastro = dataCadastro;
     }
 }
